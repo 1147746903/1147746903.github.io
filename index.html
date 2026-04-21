@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>NexusCore | 未来智能科技先锋</title>
+  <!-- Google Fonts + 现代字体栈 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (免费图标库) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #05070a;
+      font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      color: #eceff4;
+      line-height: 1.5;
+      overflow-x: hidden;
+    }
+
+    /* 科技感背景网格 + 动态光晕 */
+    .bg-tech {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      background: radial-gradient(circle at 20% 30%, #0a0f1a, #010101);
+    }
+
+    .bg-tech::before {
+      content: "";
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image: 
+        linear-gradient(#1e2a3a 1px, transparent 1px),
+        linear-gradient(90deg, #1e2a3a 1px, transparent 1px);
+      background-size: 50px 50px;
+      opacity: 0.12;
+      animation: driftGrid 40s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes driftGrid {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* 动态粒子canvas (科技特效) */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    /* 整体容器 */
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 2rem 2rem 5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 导航栏简约高级 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid rgba(64, 224, 208, 0.2);
+      backdrop-filter: blur(2px);
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #FFFFFF, #40E0D0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .logo i {
+      background: none;
+      -webkit-background-clip: unset;
+      background-clip: unset;
+      color: #40E0D0;
+      margin-right: 6px;
+    }
+
+    .nav-links a {
+      color: #ccddee;
+      text-decoration: none;
+      margin-left: 2rem;
+      font-weight: 500;
+      transition: 0.25s;
+      font-size: 1rem;
+      letter-spacing: 0.3px;
+    }
+    .nav-links a:hover {
+      color: #40E0D0;
+      text-shadow: 0 0 6px rgba(64,224,208,0.5);
+    }
+
+    /* Hero 区域 动态酷炫 */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 85vh;
+      padding: 2rem 0;
+    }
+    .badge {
+      display: inline-block;
+      background: rgba(64,224,208,0.12);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(64,224,208,0.4);
+      border-radius: 40px;
+      padding: 0.4rem 1rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      color: #9efff0;
+      margin-bottom: 1.5rem;
+      width: fit-content;
+    }
+    .hero h1 {
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      background: linear-gradient(to right, #ffffff, #a0f0ff, #40e0d0);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1.5rem;
+    }
+    .hero p {
+      font-size: 1.25rem;
+      max-width: 650px;
+      color: #b0c4de;
+      margin-bottom: 2rem;
+      font-weight: 400;
+    }
+    .cta-group {
+      display: flex;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      background: linear-gradient(95deg, #40E0D0, #2b9b8f);
+      border: none;
+      padding: 0.9rem 2rem;
+      font-weight: 700;
+      font-size: 1rem;
+      border-radius: 48px;
+      color: #0a0f1a;
+      cursor: pointer;
+      transition: 0.3s;
+      box-shadow: 0 10px 20px -5px rgba(64,224,208,0.3);
+      font-family: inherit;
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 30px -8px rgba(64,224,208,0.5);
+      background: linear-gradient(95deg, #5ff5e6, #40e0d0);
+    }
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid rgba(64,224,208,0.7);
+      padding: 0.9rem 2rem;
+      font-weight: 600;
+      border-radius: 48px;
+      color: #40E0D0;
+      cursor: pointer;
+      transition: 0.3s;
+      font-family: inherit;
+      backdrop-filter: blur(4px);
+    }
+    .btn-outline:hover {
+      background: rgba(64,224,208,0.1);
+      border-color: #40e0d0;
+      box-shadow: 0 0 15px rgba(64,224,208,0.3);
+    }
+
+    /* 公司介绍区域 卡片与科技感 */
+    .section-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 4rem 0 2rem;
+      text-align: center;
+      letter-spacing: -0.01em;
+      background: linear-gradient(120deg, #fff, #9ad0e6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin: 2rem 0 3rem;
+    }
+    .card {
+      background: rgba(12, 20, 30, 0.55);
+      backdrop-filter: blur(12px);
+      border-radius: 2rem;
+      padding: 2rem;
+      border: 1px solid rgba(64,224,208,0.25);
+      transition: all 0.35s ease;
+      box-shadow: 0 20px 35px -15px rgba(0,0,0,0.5);
+    }
+    .card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(64,224,208,0.7);
+      box-shadow: 0 25px 40px -12px rgba(64,224,208,0.25);
+    }
+    .card-icon {
+      font-size: 2.5rem;
+      color: #40E0D0;
+      margin-bottom: 1.2rem;
+    }
+    .card h3 {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      font-weight: 600;
+    }
+    .card p {
+      color: #cbd5e6;
+      line-height: 1.5;
+    }
+
+    /* 统计数字特效 */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 2rem;
+      background: rgba(0,0,0,0.4);
+      border-radius: 3rem;
+      padding: 2rem;
+      margin: 4rem 0;
+      border: 1px solid rgba(64,224,208,0.2);
+      backdrop-filter: blur(8px);
+    }
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+    .stat-number {
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: #40E0D0;
+      letter-spacing: 2px;
+    }
+    .stat-label {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* 动态服务 / 产品亮点 */
+    .services-showcase {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.8rem;
+      justify-content: center;
+      margin: 3rem 0;
+    }
+    .service-chip {
+      background: rgba(20, 30, 45, 0.7);
+      backdrop-filter: blur(8px);
+      border-radius: 60px;
+      padding: 0.8rem 1.8rem;
+      border: 1px solid #2c4f5e;
+      font-weight: 500;
+      transition: 0.2s;
+      cursor: default;
+    }
+    .service-chip i {
+      margin-right: 8px;
+      color: #40E0D0;
+    }
+    .service-chip:hover {
+      border-color: #40e0d0;
+      background: rgba(64,224,208,0.1);
+      transform: scale(1.02);
+    }
+
+    /* 底部 CTA + 联系 */
+    .footer-cta {
+      text-align: center;
+      margin-top: 5rem;
+      padding: 3rem 2rem;
+      background: radial-gradient(ellipse at 50% 100%, rgba(64,224,208,0.08), transparent);
+      border-radius: 3rem;
+    }
+    .footer-cta h2 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+    .footer-cta .btn-primary {
+      margin-top: 1.5rem;
+    }
+    .copyright {
+      text-align: center;
+      margin-top: 4rem;
+      font-size: 0.8rem;
+      color: #6c86a3;
+      border-top: 1px solid rgba(64,224,208,0.2);
+      padding-top: 2rem;
+    }
+    a {
+      text-decoration: none;
+    }
+
+    /* 响应式 */
+    @media (max-width: 780px) {
+      .container {
+        padding: 1.5rem;
+      }
+      .navbar {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      .nav-links a {
+        margin: 0 1rem;
+      }
+      .hero {
+        min-height: 70vh;
+      }
+      .stats {
+        flex-direction: column;
+        align-items: center;
+      }
+      .stat-item {
+        width: 100%;
+      }
+    }
+
+    /* 滚动渐显动画 */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(35px);
+      transition: opacity 0.8s cubic-bezier(0.2, 0.9, 0.4, 1.1), transform 0.8s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+<div class="bg-tech"></div>
+<canvas id="particle-canvas"></canvas>
+
+<div class="container">
+  <!-- 导航区 符合美国高端科技企业风格 -->
+  <div class="navbar fade-up">
+    <div class="logo">
+      <i class="fas fa-microchip"></i> NexusCore
+    </div>
+    <div class="nav-links">
+      <a href="#">Home</a>
+      <a href="#">Solutions</a>
+      <a href="#">Insights</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+
+  <!-- Hero 主视觉 -->
+  <div class="hero">
+    <div class="badge fade-up">✦ NEXT-GEN INTELLIGENCE</div>
+    <h1 class="fade-up">Redefining<br>Autonomous Future</h1>
+    <p class="fade-up">Enterprise AI · Quantum-ready infrastructure · Hyper-scalable platforms. Powering the next industrial revolution from Silicon Valley to global markets.</p>
+    <div class="cta-group fade-up">
+      <button class="btn-primary" id="exploreBtn">Explore Nexus <i class="fas fa-arrow-right"></i></button>
+      <button class="btn-outline" id="demoBtn">Request Demo →</button>
+    </div>
+  </div>
+
+  <!-- 公司介绍核心区域 -->
+  <div class="section-title fade-up">Beyond Boundaries: <span style="color:#40E0D0;">Who We Are</span></div>
+  <div class="about-grid">
+    <div class="card fade-up">
+      <div class="card-icon"><i class="fas fa-brain"></i></div>
+      <h3>AI-first Architecture</h3>
+      <p>NexusCore builds adaptive AI systems that learn, reason, and evolve. Our proprietary neural frameworks empower Fortune 500 enterprises to unlock exponential growth.</p>
+    </div>
+    <div class="card fade-up">
+      <div class="card-icon"><i class="fas fa-globe-americas"></i></div>
+      <h3>Global Edge Network</h3>
+      <p>With data centers across NA, EU & APAC, we deliver sub-10ms latency and military-grade encryption. Reliability meets high-performance computing.</p>
+    </div>
+    <div class="card fade-up">
+      <div class="card-icon"><i class="fas fa-shield-alt"></i></div>
+      <h3>Zero-Trust Security</h3>
+      <p>From confidential computing to quantum-safe cryptography, your digital assets are fortified by next-gen zero-trust protocols and continuous validation.</p>
+    </div>
+  </div>
+
+  <!-- 数据动态统计 (js 驱动动态效果) -->
+  <div class="stats fade-up" id="statsSection">
+    <div class="stat-item">
+      <div class="stat-number" data-target="487">0</div>
+      <div class="stat-label">+ Fortune Clients</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="99.999">0</div>
+      <div class="stat-label">% Uptime SLA</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="1250">0</div>
+      <div class="stat-label">AI Patents</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-number" data-target="28">0</div>
+      <div class="stat-label">Global Hubs</div>
+    </div>
+  </div>
+
+  <!-- 科技服务标签 -->
+  <div class="services-showcase">
+    <div class="service-chip fade-up"><i class="fas fa-robot"></i> Autonomous Agents</div>
+    <div class="service-chip fade-up"><i class="fas fa-chart-line"></i> Predictive Analytics</div>
+    <div class="service-chip fade-up"><i class="fas fa-cloud-upload-alt"></i> Hybrid Cloud Mesh</div>
+    <div class="service-chip fade-up"><i class="fas fa-lock"></i> Confidential Computing</div>
+    <div class="service-chip fade-up"><i class="fas fa-dna"></i> Generative AI Stack</div>
+  </div>
+
+  <!-- 额外的价值理念区块 (美国市场信任锚点) -->
+  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: space-between; margin: 3rem 0;">
+    <div class="fade-up" style="flex:1; min-width: 200px;">
+      <i class="fas fa-quote-left" style="color:#40E0D0; font-size: 2rem; opacity:0.7;"></i>
+      <p style="font-style: italic; margin-top: 0.5rem;">"NexusCore cut our inference latency by 73% and accelerated time-to-market — a true paradigm shift."</p>
+      <p style="margin-top: 0.8rem; font-weight:600;">— CTO, Leading FinTech</p>
+    </div>
+    <div class="fade-up" style="flex:1; min-width: 200px; text-align: right;">
+      <i class="fas fa-chart-simple" style="color:#40E0D0; font-size: 2rem;"></i>
+      <p style="margin-top: 1rem;">Trusted by industry pioneers in healthcare, autonomous systems, and digital finance. </p>
+    </div>
+  </div>
+
+  <!-- 底部联系区域 -->
+  <div class="footer-cta fade-up">
+    <h2>Ready to transcend limits?</h2>
+    <p style="max-width: 500px; margin: 0 auto;">Join the vanguard of AI-driven enterprises. Let's architect the future together.</p>
+    <button class="btn-primary" id="contactCTA">Contact Sales <i class="fas fa-arrow-circle-right"></i></button>
+  </div>
+  <div class="copyright">
+    <span>© 2025 NexusCore Inc. — Silicon Valley · New York · Seattle — All trademarks and IP belong to NexusCore</span>
+  </div>
+</div>
+
+<script>
+  (function() {
+    // ----------------------------- 粒子系统 动态炫酷特效 ----------------------------------
+    const canvas = document.getElementById('particle-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let particles = [];
+    const PARTICLE_COUNT = 140;
+
+    function resizeCanvas() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width;
+      canvas.height = height;
+    }
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * width;
+        this.y = Math.random() * height;
+        this.size = Math.random() * 2.2 + 0.8;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.3;
+        this.alpha = Math.random() * 0.5 + 0.2;
+        this.color = `rgba(64, 224, 208, ${this.alpha})`;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0) this.x = width;
+        if (this.x > width) this.x = 0;
+        if (this.y < 0) this.y = height;
+        if (this.y > height) this.y = 0;
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        // 添加光晕效果
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = "#40E0D0";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < PARTICLE_COUNT; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animateParticles() {
+      if (!ctx) return;
+      ctx.clearRect(0, 0, width, height);
+      for (let p of particles) {
+        p.update();
+        p.draw();
+      }
+      // 连接线特效 (科技感)
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance < 110) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(64, 224, 208, ${0.12 * (1 - distance / 120)})`;
+            ctx.lineWidth = 0.6;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      requestAnimationFrame(animateParticles);
+    }
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      initParticles();
+    });
+    resizeCanvas();
+    initParticles();
+    animateParticles();
+
+    // ----------------------------- 滚动渐显 Intersection Observer ----------------------------------
+    const fadeElements = document.querySelectorAll('.fade-up');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -40px 0px" });
+    fadeElements.forEach(el => observer.observe(el));
+
+    // 预先让可见区域元素直接显示，手动触发检查
+    setTimeout(() => {
+      fadeElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < window.innerHeight - 80) {
+          el.classList.add('visible');
+          observer.unobserve(el);
+        }
+      });
+    }, 100);
+
+    // ----------------------------- 数字动态滚动特效 ----------------------------------
+    function animateNumbers() {
+      const statNumbers = document.querySelectorAll('.stat-number');
+      statNumbers.forEach(stat => {
+        const targetRaw = stat.getAttribute('data-target');
+        let target = parseFloat(targetRaw);
+        if (isNaN(target)) return;
+        const isFloat = targetRaw.includes('.');
+        const duration = 1800;
+        const startTime = performance.now();
+        const startValue = 0;
+        const updateNumber = (currentTime) => {
+          const elapsed = currentTime - startTime;
+          let progress = Math.min(1, elapsed / duration);
+          let currentVal = progress * target;
+          if (isFloat) {
+            stat.innerText = currentVal.toFixed(2);
+          } else {
+            stat.innerText = Math.floor(currentVal);
+          }
+          if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+          } else {
+            stat.innerText = isFloat ? target.toFixed(2) : Math.floor(target);
+          }
+        };
+        requestAnimationFrame(updateNumber);
+      });
+    }
+    // 监听统计区域出现时触发数字滚动
+    const statsSection = document.getElementById('statsSection');
+    let animated = false;
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && !animated) {
+          animated = true;
+          animateNumbers();
+          statsObserver.unobserve(statsSection);
+        }
+      });
+    }, { threshold: 0.4 });
+    if (statsSection) statsObserver.observe(statsSection);
+
+    // 按钮交互 (模拟高端商业落地页反馈)
+    const exploreBtn = document.getElementById('exploreBtn');
+    const demoBtn = document.getElementById('demoBtn');
+    const contactBtn = document.getElementById('contactCTA');
+    
+    function showToastMessage(msg) {
+      // 创建临时toast通知，符合美国网站轻提示习惯
+      const toast = document.createElement('div');
+      toast.innerText = msg;
+      toast.style.position = 'fixed';
+      toast.style.bottom = '30px';
+      toast.style.left = '50%';
+      toast.style.transform = 'translateX(-50%)';
+      toast.style.background = 'rgba(0,0,0,0.85)';
+      toast.style.backdropFilter = 'blur(20px)';
+      toast.style.border = '1px solid #40E0D0';
+      toast.style.color = '#40E0D0';
+      toast.style.padding = '12px 28px';
+      toast.style.borderRadius = '60px';
+      toast.style.fontWeight = '500';
+      toast.style.fontSize = '0.9rem';
+      toast.style.zIndex = '9999';
+      toast.style.fontFamily = 'Inter, sans-serif';
+      toast.style.boxShadow = '0 8px 20px rgba(0,0,0,0.4)';
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 400);
+      }, 2800);
+    }
+
+    if (exploreBtn) {
+      exploreBtn.addEventListener('click', () => {
+        showToastMessage('✨ Explore NexusCore Platform — Next-gen AI solutions ready for enterprise.');
+      });
+    }
+    if (demoBtn) {
+      demoBtn.addEventListener('click', () => {
+        showToastMessage('📅 Demo request received. Our specialists will reach out within 24h.');
+      });
+    }
+    if (contactBtn) {
+      contactBtn.addEventListener('click', () => {
+        showToastMessage('📧 Contact our sales: hello@nexuscore.ai | +1 (650) 555-0199');
+      });
+    }
+    // 导航链接模拟
+    document.querySelectorAll('.nav-links a').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        showToastMessage(`🚀 NexusCore: ${link.innerText} — explore cutting-edge innovation`);
+      });
+    });
+    // 额外: 让所有卡片和服务标签也有hover沉浸感（无额外动作）
+  })();
+</script>
+</body>
+</html>
